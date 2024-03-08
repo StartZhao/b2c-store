@@ -13,6 +13,8 @@
         <module>store-commons</module>
         <module>store-front-user</module>
         <module>store-static-oss</module>
+        <module>store-front-carousel</module>
+        <module>store-front-product</module>
     </modules>
 
     <parent>

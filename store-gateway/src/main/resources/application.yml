@@ -15,3 +15,7 @@ spring:
           uri: lb://static-service #使用负载均衡,调用服务名,这是服务名
           predicates:
             - Path=/public/** # 访问静态资源相关,转发到静态资源服务
+        - id: carousel-service # 轮播图服务
+          uri: lb://carousel-service #使用负载均衡,调用服务名,这是服务名
+          predicates:
+            - Path=/carousel/** # 访问静态资源相关,转发到静态资源服务
