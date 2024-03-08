@@ -48,7 +48,7 @@ public class Product implements Serializable {
     private Integer productNum;
     @JsonProperty("product_sales")
     private Integer productSales;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonProperty("product_price")
     private Double productPrice;
 
 

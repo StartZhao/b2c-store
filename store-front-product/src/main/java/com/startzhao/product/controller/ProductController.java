@@ -1,5 +1,6 @@
 package com.startzhao.product.controller;
 
+import com.startzhao.param.ProductHotsParam;
 import com.startzhao.param.ProductPromo;
 import com.startzhao.product.service.ProductService;
 import com.startzhao.utils.R;
@@ -34,6 +35,12 @@ public class ProductController {
     public R promo(@RequestBody @Validated ProductPromo productPromo, BindingResult result) {
         if (result.hasErrors()) return R.fail("参数异常，首页类别无法展示");
         return productService.promo(productPromo.getCategoryName());
+    }
+
+    @PostMapping("/hots")
+    public R hots(@RequestBody @Validated ProductHotsParam productHotsParam, BindingResult result) {
+        if (result.hasErrors()) return R.fail("参数错误，查询失败！");
+        return productService.hots(productHotsParam);
     }
 
 }

@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * ClassName: ProductServiceImpl
  * Package: com.startzhao.product.service.impl
@@ -44,6 +46,27 @@ public class CategoryServiceImpl implements CategoryService {
         }
         R ok = R.ok("分类查询成功",category);
         log.info("CategoryServiceImpl.getByName业务结束，结果{}", ok);
+        return ok;
+    }
+
+    /**
+     * 通过分类名得到分类数据，但分类名数量不确定需要使用模糊查询
+     * 1、查询分类
+     * 2、返回查询结果
+     * @param categoryName
+     * @return
+     */
+    @Override
+    public R hots(List<String> categoryName) {
+        QueryWrapper<Category> queryWrapper = new QueryWrapper<>();
+        queryWrapper.in("category_name",categoryName).select("category_id");
+        List<Object> ids = categoryMapper.selectObjs(queryWrapper);
+        if (ids.isEmpty()) {
+            log.info("CategoryServiceImpl.hots业务结束，结果{}", "不存在这些分类，查询失败");
+            return R.fail("不存在这些分类，查询失败");
+        }
+        R ok = R.ok("查询分类成功", ids);
+        log.info("CategoryServiceImpl.hots业务结束，结果{}", ok);
         return ok;
     }
 }

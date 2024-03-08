@@ -3,6 +3,8 @@ package com.startzhao.category.service;
 import com.startzhao.param.ProductPromo;
 import com.startzhao.utils.R;
 
+import java.util.List;
+
 /**
  * ClassName: ProductService
  * Package: com.startzhao.product.service
@@ -20,4 +22,11 @@ public interface CategoryService {
      * @return
      */
     R getByName(String categoryName);
+
+    /**
+     * 通过分类名得到分类数据，但分类名数量不确定需要使用模糊查询
+     * @param categoryName
+     * @return
+     */
+    R hots(List<String> categoryName);
 }
