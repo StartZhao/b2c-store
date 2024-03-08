@@ -69,4 +69,21 @@ public class CategoryServiceImpl implements CategoryService {
         log.info("CategoryServiceImpl.hots业务结束，结果{}", ok);
         return ok;
     }
+
+    /**
+     * 得到所有分类数据
+     *
+     * @return
+     */
+    @Override
+    public R list() {
+        QueryWrapper<Category> queryWrapper = new QueryWrapper<>();
+        List<Category> categoryList = categoryMapper.selectList(queryWrapper);
+        if (categoryList.isEmpty()) {
+            log.info("CategoryServiceImpl.list业务结束，结果{}", "没有分类数据，查询失败");
+            return R.fail("没有分类数据，查询失败");
+        }
+        R ok = R.ok("分类查询成功", categoryList);
+        return ok;
+    }
 }

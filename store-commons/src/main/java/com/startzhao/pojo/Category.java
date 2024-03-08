@@ -27,6 +27,8 @@ public class Category implements Serializable {
     public static final long serialVersionUID = 2L;
 
     @TableId(type = IdType.AUTO)
+    @JsonProperty("category_id")
     private Integer categoryId;
+    @JsonProperty("category_name")
     private String categoryName;
 }

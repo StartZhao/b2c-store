@@ -40,5 +40,10 @@ public class CategoryController {
         return categoryService.hots(productHotsParam.getCategoryName());
     }
 
+    @PostMapping("/list")
+    public R list(){
+        return categoryService.list();
+    }
+
 
 }

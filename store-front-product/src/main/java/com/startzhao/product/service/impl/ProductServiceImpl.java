@@ -4,7 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.startzhao.clients.CategoryClient;
+import com.startzhao.param.ProductByCategoryParam;
 import com.startzhao.param.ProductHotsParam;
+import com.startzhao.pojo.Category;
 import com.startzhao.pojo.Product;
 import com.startzhao.product.mapper.ProductMapper;
 import com.startzhao.product.service.ProductService;
@@ -40,6 +42,7 @@ public class ProductServiceImpl implements ProductService {
      * 1、根据类别称，调用 feign 客户端访问分类服务获取分类数据
      * 2、根据类别查询商品 最多显示 7 件商品 销量降序排列
      * 2、返回查询结果
+     *
      * @param categoryName
      * @return
      */
@@ -50,16 +53,16 @@ public class ProductServiceImpl implements ProductService {
             log.info("ProductServiceImpl.promo业务结束，结果{}", "分类查询失败");
             return r;
         }
-        LinkedHashMap<String,Object> map = (LinkedHashMap<String, Object>) r.getData();
-        Integer categoryId = (Integer) map.get("categoryId");
+        LinkedHashMap<String, Object> map = (LinkedHashMap<String, Object>) r.getData();
+        Integer categoryId = (Integer) map.get("category_id");
 
         QueryWrapper<Product> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("category_id",categoryId).orderByDesc("product_sales");
+        queryWrapper.eq("category_id", categoryId).orderByDesc("product_sales");
         IPage<Product> page = new Page<>(1, 7);
         //返回的是包装数据! 内部有对应的商品集合,也有分页的参数 例如: 总条数 总页数等等
         page = productMapper.selectPage(page, queryWrapper);
         List<Product> productList = page.getRecords();
-        if(productList.isEmpty()) {
+        if (productList.isEmpty()) {
             log.info("ProductServiceImpl.promo业务结束，结果{}", "该分类下没有商品");
             return R.fail("该分类下没有商品");
         }
@@ -73,6 +76,7 @@ public class ProductServiceImpl implements ProductService {
      * 1、根据类别称，调用 feign 客户端访问分类服务获取分类数据
      * 2、根据分类id，查询商品，根据销量降序
      * 3、返回查询结果
+     *
      * @param productHotsParam
      * @return
      */
@@ -86,7 +90,7 @@ public class ProductServiceImpl implements ProductService {
         List<Object> ids = (List<Object>) r.getData();
 
         QueryWrapper<Product> queryWrapper = new QueryWrapper<>();
-        queryWrapper.in("category_id",ids).orderByDesc("product_sales");
+        queryWrapper.in("category_id", ids).orderByDesc("product_sales");
         IPage<Product> page = new Page<>(1, 7);
         page = productMapper.selectPage(page, queryWrapper);
         List<Product> productList = page.getRecords();
@@ -96,6 +100,46 @@ public class ProductServiceImpl implements ProductService {
         }
         R ok = R.ok("多热门商品查询成功", productList);
         log.info("ProductServiceImpl.hots业务结束，结果{}", ok);
+        return ok;
+    }
+
+    /**
+     * 类别信息查询
+     * 1、调用类别服务得到类别数据
+     * 2、返回数据结果
+     *
+     * @return
+     */
+    @Override
+    public R list() {
+
+        return categoryClient.list();
+    }
+
+    /**
+     * 根据条件获取shangpin数据
+     * 1、根据 条件查询商品
+     * 2、返回查询结果
+     *
+     * @param productByCategoryParam
+     * @return
+     */
+    @Override
+    public R byCategory(ProductByCategoryParam productByCategoryParam) {
+        QueryWrapper<Product> queryWrapper = new QueryWrapper<>();
+        if (productByCategoryParam.getCategoryId() != null && productByCategoryParam.getCategoryId().length > 0) {
+            queryWrapper.in("category_id", productByCategoryParam.getCategoryId());
+        }
+
+        IPage<Product> page = new Page<>(productByCategoryParam.getCurrentPage(), productByCategoryParam.getPageSize());
+        page = productMapper.selectPage(page, queryWrapper);
+        if (page.getTotal() == 0) {
+            log.info("ProductServiceImpl.byCategory业务结束，结果{}", "不存在该条件商品数据，查询失败");
+            return R.fail("不存在该条件商品数据，查询失败");
+        }
+        R ok = R.ok("查询成功", page.getRecords(), page.getTotal());
+        log.info("ProductServiceImpl.byCategory业务结束，结果{}", ok);
+
         return ok;
     }
 }

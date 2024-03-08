@@ -1,7 +1,7 @@
 package com.startzhao.product.service;
 
+import com.startzhao.param.ProductByCategoryParam;
 import com.startzhao.param.ProductHotsParam;
-import com.startzhao.param.ProductPromo;
 import com.startzhao.utils.R;
 
 /**
@@ -28,4 +28,17 @@ public interface ProductService {
      * @return
      */
     R hots(ProductHotsParam productHotsParam);
+
+    /**
+     * 类别信息查询
+     * @return
+     */
+    R list();
+
+    /**
+     * 根据条件获取分类数据
+     * @param productByCategoryParam
+     * @return
+     */
+    R byCategory(ProductByCategoryParam productByCategoryParam);
 }

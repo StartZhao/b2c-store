@@ -1,12 +1,11 @@
 package com.startzhao.param;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 
 /**
- * ClassName: ProductPromo
+ * ClassName: ProductPromoParam
  * Package: com.startzhao.param
  * Description: 首页类别接收参数
  *
@@ -15,7 +14,7 @@ import javax.validation.constraints.NotBlank;
  * @Version 1.0
  */
 @Data
-public class ProductPromo {
+public class ProductPromoParam {
 
     @NotBlank
     private String categoryName;

@@ -1,6 +1,5 @@
 package com.startzhao.category.service;
 
-import com.startzhao.param.ProductPromo;
 import com.startzhao.utils.R;
 
 import java.util.List;
@@ -29,4 +28,10 @@ public interface CategoryService {
      * @return
      */
     R hots(List<String> categoryName);
+
+    /**
+     * 得到所有分类数据
+     * @return
+     */
+    R list();
 }
