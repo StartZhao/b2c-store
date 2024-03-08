@@ -41,4 +41,18 @@ public interface ProductService {
      * @return
      */
     R byCategory(ProductByCategoryParam productByCategoryParam);
+
+    /**
+     * 根据商品 id 查询商品数据
+     * @param productId
+     * @return
+     */
+    R detail(Integer productId);
+
+    /**
+     * 根据商品 id 查询商品图像
+     * @param productId
+     * @return
+     */
+    R pictures(Integer productId);
 }

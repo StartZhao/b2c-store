@@ -8,7 +8,9 @@ import com.startzhao.param.ProductByCategoryParam;
 import com.startzhao.param.ProductHotsParam;
 import com.startzhao.pojo.Category;
 import com.startzhao.pojo.Product;
+import com.startzhao.pojo.ProductPicture;
 import com.startzhao.product.mapper.ProductMapper;
+import com.startzhao.product.mapper.ProductPictureMapper;
 import com.startzhao.product.service.ProductService;
 import com.startzhao.utils.R;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +38,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private ProductMapper productMapper;
+
+    @Autowired
+    private ProductPictureMapper productPictureMapper;
 
     /**
      * 根据首页类别显示商品 最多显示 7 件商品
@@ -141,5 +146,44 @@ public class ProductServiceImpl implements ProductService {
         log.info("ProductServiceImpl.byCategory业务结束，结果{}", ok);
 
         return ok;
+    }
+
+    /**
+     * 根据商品 id 查询商品数据
+     *
+     * @param productId
+     * @return
+     */
+    @Override
+    public R detail(Integer productId) {
+//        QueryWrapper<Product> queryWrapper = new QueryWrapper<>();
+//        queryWrapper.eq("product_id",productId);
+//        Product product = productMapper.selectOne(queryWrapper);
+        Product product = productMapper.selectById(productId);
+        if (product == null) {
+            log.info("ProductServiceImpl.detail业务结束，结果{}", "商品详情查询失败");
+            return R.fail("商品详情查询失败");
+        }
+        log.info("ProductServiceImpl.detail业务结束，结果{}", "商品详情查询成功");
+        return R.ok("商品详情查询成功",product);
+    }
+
+    /**
+     * 根据商品 id 查询商品图像
+     *
+     * @param productId
+     * @return
+     */
+    @Override
+    public R pictures(Integer productId) {
+        QueryWrapper<ProductPicture> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("product_id",productId);
+        List<ProductPicture> productPictureList = productPictureMapper.selectList(queryWrapper);
+        if (productPictureList == null) {
+            log.info("ProductServiceImpl.detail业务结束，结果{}", "商品图片查询失败");
+            return R.fail("商品图片查询失败");
+        }
+        log.info("ProductServiceImpl.detail业务结束，结果{}", "商品图片查询成功");
+        return R.ok("商品详情查询成功",productPictureList);
     }
 }
