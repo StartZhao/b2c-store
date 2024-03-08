@@ -15,6 +15,7 @@
         <module>store-static-oss</module>
         <module>store-front-carousel</module>
         <module>store-front-product</module>
+        <module>store-front-category</module>
     </modules>
 
     <parent>

@@ -19,3 +19,11 @@ spring:
           uri: lb://carousel-service #使用负载均衡,调用服务名,这是服务名
           predicates:
             - Path=/carousel/** # 访问静态资源相关,转发到静态资源服务
+        - id: product-service # 商品服务
+          uri: lb://product-service #使用负载均衡,调用服务名,这是服务名
+          predicates:
+            - Path=/product/** # 访问静态资源相关,转发到静态资源服务
+        - id: category-service # 分类服务
+          uri: lb://category-service #使用负载均衡,调用服务名,这是服务名
+          predicates:
+            - Path=/category/** # 访问静态资源相关,转发到静态资源服务
