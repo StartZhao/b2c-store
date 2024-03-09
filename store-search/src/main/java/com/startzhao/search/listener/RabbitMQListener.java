@@ -33,6 +33,11 @@ public class RabbitMQListener {
     @Autowired
     private RestHighLevelClient restHighLevelClient;
 
+    /**
+     * 监听并插入数据
+     * @param product
+     * @throws IOException
+     */
     @RabbitListener(
             bindings = @QueueBinding(
                     value = @Queue(name = "insert.queue"),
@@ -49,6 +54,11 @@ public class RabbitMQListener {
         restHighLevelClient.index(indexRequest, RequestOptions.DEFAULT);
     }
 
+    /**
+     * 监听并删除数据
+     * @param productId
+     * @throws IOException
+     */
     @RabbitListener(
             bindings = @QueueBinding(
                     value = @Queue(name = "remove.queue"),

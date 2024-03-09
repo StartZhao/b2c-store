@@ -17,6 +17,7 @@ import com.startzhao.product.service.ProductService;
 import com.startzhao.utils.R;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashMap;
@@ -59,6 +60,7 @@ public class ProductServiceImpl implements ProductService {
      * @return
      */
     @Override
+    @Cacheable(value = "list.product", key = "#categoryName")
     public R promo(String categoryName) {
         R r = categoryClient.getByName(categoryName);
         if (r.getCode().equals(R.FAIL_CODE)) {
@@ -93,6 +95,7 @@ public class ProductServiceImpl implements ProductService {
      * @return
      */
     @Override
+    @Cacheable(value = "list.product", key = "#productHotsParam.categoryName")
     public R hots(ProductHotsParam productHotsParam) {
         R r = categoryClient.hots(productHotsParam);
         if (r.getCode().equals(R.FAIL_CODE)) {
@@ -123,6 +126,7 @@ public class ProductServiceImpl implements ProductService {
      * @return
      */
     @Override
+    @Cacheable(value = "list.category", key = "#root.methodName", cacheManager = "cacheManagerDay")
     public R list() {
 
         return categoryClient.list();
@@ -137,6 +141,7 @@ public class ProductServiceImpl implements ProductService {
      * @return
      */
     @Override
+    @Cacheable(value = "list.product", key = "#productByCategoryParam.categoryId+'-'+#productByCategoryParam.currentPage+'-'+#productByCategoryParam.pageSize")
     public R byCategory(ProductByCategoryParam productByCategoryParam) {
         QueryWrapper<Product> queryWrapper = new QueryWrapper<>();
         if (productByCategoryParam.getCategoryId() != null && productByCategoryParam.getCategoryId().length > 0) {
@@ -162,6 +167,7 @@ public class ProductServiceImpl implements ProductService {
      * @return
      */
     @Override
+    @Cacheable(value = "product", key = "#productId")
     public R detail(Integer productId) {
 //        QueryWrapper<Product> queryWrapper = new QueryWrapper<>();
 //        queryWrapper.eq("product_id",productId);
@@ -182,6 +188,7 @@ public class ProductServiceImpl implements ProductService {
      * @return
      */
     @Override
+    @Cacheable(value = "picture",key = "#productId")
     public R pictures(Integer productId) {
         QueryWrapper<ProductPicture> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("product_id",productId);

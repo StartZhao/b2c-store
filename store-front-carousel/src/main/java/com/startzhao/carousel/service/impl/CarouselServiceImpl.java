@@ -7,6 +7,7 @@ import com.startzhao.pojo.Carousel;
 import com.startzhao.utils.R;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,6 +37,7 @@ public class CarouselServiceImpl implements CarouselService {
      * @return
      */
     @Override
+    @Cacheable(value = "list.carousel", key = "#root.methodName")
     public R list() {
         QueryWrapper<Carousel> queryWrapper = new QueryWrapper<>();
 
