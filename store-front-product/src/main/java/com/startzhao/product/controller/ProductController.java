@@ -1,9 +1,6 @@
 package com.startzhao.product.controller;
 
-import com.startzhao.param.ProductByCategoryParam;
-import com.startzhao.param.ProductDetailParam;
-import com.startzhao.param.ProductHotsParam;
-import com.startzhao.param.ProductPromoParam;
+import com.startzhao.param.*;
 import com.startzhao.product.service.ProductService;
 import com.startzhao.utils.R;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,6 +66,11 @@ public class ProductController {
     public R pictures(@RequestBody @Validated ProductDetailParam productDetailParam, BindingResult result) {
         if (result.hasErrors()) return R.fail("参数错误，查询详情失败");
         return productService.pictures(productDetailParam.getProductId());
+    }
+
+    @PostMapping("/search")
+    public R search(@RequestBody ProductSearchParam productSearchParam) {
+        return productService.search(productSearchParam);
     }
 
 }

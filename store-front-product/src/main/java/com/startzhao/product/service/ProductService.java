@@ -2,7 +2,11 @@ package com.startzhao.product.service;
 
 import com.startzhao.param.ProductByCategoryParam;
 import com.startzhao.param.ProductHotsParam;
+import com.startzhao.param.ProductSearchParam;
+import com.startzhao.pojo.Product;
 import com.startzhao.utils.R;
+
+import java.util.List;
 
 /**
  * ClassName: ProductService
@@ -55,4 +59,17 @@ public interface ProductService {
      * @return
      */
     R pictures(Integer productId);
+
+    /**
+     * 查询所有商品
+     * @return 返回商品集合
+     */
+    List<Product> listProduct();
+
+    /**
+     * 商品搜索
+     * @param productSearchParam
+     * @return
+     */
+    R search(ProductSearchParam productSearchParam);
 }

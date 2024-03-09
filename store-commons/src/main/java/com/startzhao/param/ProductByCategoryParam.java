@@ -16,13 +16,10 @@ import javax.validation.constraints.NotNull;
  * @Version 1.0
  */
 @Data
-public class ProductByCategoryParam {
+public class ProductByCategoryParam extends PageParam{
 
     @NotNull
     @JsonProperty("categoryID")
     private Integer[] categoryId;
-    @NotNull
-    private Integer currentPage = 1;    //默认值
-    @NotNull
-    private Integer pageSize = 15;  //默认值
+
 }

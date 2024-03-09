@@ -4,9 +4,12 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
@@ -22,36 +25,62 @@ import java.io.Serializable;
  * @Version 1.0
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @TableName("product")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Product implements Serializable {
 
-    public static final long serialVersionUID = 1L;
+    public static final Long serialVersionUID = 1L;
 
-    @JsonProperty("product_id")    // jackson 的注解，用于进行属性格式化
     @TableId(type = IdType.AUTO)
+    @JsonProperty("product_id")
     private Integer productId;
 
-    @TableField("product_name")
+    @JsonProperty("product_name")
     private String productName;
-    @TableField("category_id")
+
     @JsonProperty("category_id")
-    private Integer categoryId;
+    private String categoryId;
+
+    /**
+     * 手机title
+     */
     @JsonProperty("product_title")
     private String productTitle;
+
+    /**
+     * 手机信息描述
+     */
     @JsonProperty("product_intro")
     private String productIntro;
+
     @JsonProperty("product_picture")
     private String productPicture;
-    @JsonProperty("product_selling_price")
-    private Double productSellingPrice;
-    @JsonProperty("product_num")
-    private Integer productNum;
-    @JsonProperty("product_sales")
-    private Integer productSales;
+
+    /**
+     * 商品价格
+     */
     @JsonProperty("product_price")
     private Double productPrice;
 
+    /**
+     * 售卖价格
+     */
+    @JsonProperty("product_selling_price")
+    private Double productSellingPrice;
 
+    /**
+     * 商品库存
+     */
+    @JsonProperty("product_num")
+    private int productNum;
+
+    /**
+     * 已卖数量
+     */
+    @JsonProperty("product_sales")
+    private int productSales;
 
 
 }

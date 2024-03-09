@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.startzhao.clients.CategoryClient;
+import com.startzhao.clients.SearchClient;
 import com.startzhao.param.ProductByCategoryParam;
 import com.startzhao.param.ProductHotsParam;
+import com.startzhao.param.ProductSearchParam;
 import com.startzhao.pojo.Category;
 import com.startzhao.pojo.Product;
 import com.startzhao.pojo.ProductPicture;
@@ -37,10 +39,15 @@ public class ProductServiceImpl implements ProductService {
     private CategoryClient categoryClient;
 
     @Autowired
+    private SearchClient searchClient;
+
+    @Autowired
     private ProductMapper productMapper;
 
     @Autowired
     private ProductPictureMapper productPictureMapper;
+
+
 
     /**
      * 根据首页类别显示商品 最多显示 7 件商品
@@ -185,5 +192,29 @@ public class ProductServiceImpl implements ProductService {
         }
         log.info("ProductServiceImpl.detail业务结束，结果{}", "商品图片查询成功");
         return R.ok("商品详情查询成功",productPictureList);
+    }
+
+    /**
+     * 查询所有商品
+     *
+     * @return 返回商品集合
+     */
+    @Override
+    public List<Product> listProduct() {
+        return productMapper.selectList(null);
+
+    }
+
+    /**
+     * 商品搜索
+     * 1、调用搜索客户端，得到商品数据
+     * @param productSearchParam
+     * @return
+     */
+    @Override
+    public R search(ProductSearchParam productSearchParam) {
+        R ok = searchClient.product(productSearchParam);
+        log.info("ProductServiceImpl.search业务结束，结果{}", ok);
+        return ok;
     }
 }
