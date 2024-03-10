@@ -8,7 +8,6 @@ import com.startzhao.clients.SearchClient;
 import com.startzhao.param.ProductByCategoryParam;
 import com.startzhao.param.ProductHotsParam;
 import com.startzhao.param.ProductSearchParam;
-import com.startzhao.pojo.Category;
 import com.startzhao.pojo.Product;
 import com.startzhao.pojo.ProductPicture;
 import com.startzhao.product.mapper.ProductMapper;
@@ -223,5 +222,20 @@ public class ProductServiceImpl implements ProductService {
         R ok = searchClient.product(productSearchParam);
         log.info("ProductServiceImpl.search业务结束，结果{}", ok);
         return ok;
+    }
+
+    /**
+     * 根据商品 ids 得到商品数据
+     *
+     * @param ids
+     * @return
+     */
+    @Override
+    public List<Product> listProductByIds(List<Integer> ids) {
+        QueryWrapper<Product> queryWrapper = new QueryWrapper<>();
+        queryWrapper.in("product_id", ids);
+
+        return productMapper.selectList(queryWrapper);
+
     }
 }

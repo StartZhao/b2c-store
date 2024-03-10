@@ -27,7 +27,14 @@ spring:
           uri: lb://category-service #使用负载均衡,调用服务名,这是服务名
           predicates:
             - Path=/category/** # 访问静态资源相关,转发到静态资源服务
-        - id: search-service # 分类服务
+        - id: search-service # 搜索服务
           uri: lb://search-service #使用负载均衡,调用服务名,这是服务名
           predicates:
             - Path=/search/** # 访问静态资源相关,转发到静态资源服务
+        - id: collect-service # 收藏服务
+          uri: lb://collect-service #使用负载均衡,调用服务名,这是服务名
+          predicates:
+            - Path=/collect/** # 访问静态资源相关,转发到静态资源服务
+
+
+
