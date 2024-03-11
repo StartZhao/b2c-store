@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: dev,cache
+    active: dev,cache,mq
   # 连接池配置
   datasource:
     url: ${datasource.url}

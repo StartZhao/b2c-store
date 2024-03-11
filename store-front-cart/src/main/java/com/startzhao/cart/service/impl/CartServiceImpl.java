@@ -13,6 +13,7 @@ import com.startzhao.vo.CartVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -196,5 +197,16 @@ public class CartServiceImpl implements CartService {
         }
         log.info("CartServiceImpl.update业务结束，结果{}", "删除购物车成功");
         return R.ok("删除购物车成功");
+    }
+
+    /**
+     * 根据购物车 id 删除购物车信息
+     *
+     * @param cartIds
+     */
+    @Override
+    @Transactional
+    public void clearCart(List<Integer> cartIds) {
+        cartMapper.deleteBatchIds(cartIds);
     }
 }

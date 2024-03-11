@@ -1,9 +1,11 @@
 package com.startzhao.product.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.startzhao.param.ProductByCategoryParam;
 import com.startzhao.param.ProductHotsParam;
 import com.startzhao.param.ProductSearchParam;
 import com.startzhao.pojo.Product;
+import com.startzhao.to.OrderToProduct;
 import com.startzhao.utils.R;
 
 import java.util.List;
@@ -17,7 +19,7 @@ import java.util.List;
  * @Create 2024/3/8 17:44
  * @Version 1.0
  */
-public interface ProductService {
+public interface ProductService extends IService<Product> {
 
     /**
      * 根据首页类别显示商品 最多显示 7 件商品
@@ -37,7 +39,7 @@ public interface ProductService {
      * 类别信息查询
      * @return
      */
-    R list();
+    R listCategory();
 
     /**
      * 根据条件获取分类数据
@@ -79,4 +81,10 @@ public interface ProductService {
      * @return
      */
     List<Product> listProductByIds(List<Integer> ids);
+
+    /**
+     * 修改库存，增加销量
+     * @param orderToProducts
+     */
+    void subNumber(List<OrderToProduct> orderToProducts);
 }

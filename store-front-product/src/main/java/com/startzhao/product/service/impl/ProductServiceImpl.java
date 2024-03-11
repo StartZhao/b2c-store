@@ -1,8 +1,10 @@
 package com.startzhao.product.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.startzhao.clients.CategoryClient;
 import com.startzhao.clients.SearchClient;
 import com.startzhao.param.ProductByCategoryParam;
@@ -13,14 +15,19 @@ import com.startzhao.pojo.ProductPicture;
 import com.startzhao.product.mapper.ProductMapper;
 import com.startzhao.product.mapper.ProductPictureMapper;
 import com.startzhao.product.service.ProductService;
+import com.startzhao.to.OrderToProduct;
 import com.startzhao.utils.R;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * ClassName: ProductServiceImpl
@@ -33,7 +40,7 @@ import java.util.List;
  */
 @Slf4j
 @Service
-public class ProductServiceImpl implements ProductService {
+public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> implements ProductService {
 
     @Autowired
     private CategoryClient categoryClient;
@@ -46,7 +53,6 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private ProductPictureMapper productPictureMapper;
-
 
 
     /**
@@ -126,7 +132,7 @@ public class ProductServiceImpl implements ProductService {
      */
     @Override
     @Cacheable(value = "list.category", key = "#root.methodName", cacheManager = "cacheManagerDay")
-    public R list() {
+    public R listCategory() {
 
         return categoryClient.list();
     }
@@ -177,7 +183,7 @@ public class ProductServiceImpl implements ProductService {
             return R.fail("商品详情查询失败");
         }
         log.info("ProductServiceImpl.detail业务结束，结果{}", "商品详情查询成功");
-        return R.ok("商品详情查询成功",product);
+        return R.ok("商品详情查询成功", product);
     }
 
     /**
@@ -187,17 +193,17 @@ public class ProductServiceImpl implements ProductService {
      * @return
      */
     @Override
-    @Cacheable(value = "picture",key = "#productId")
+    @Cacheable(value = "picture", key = "#productId")
     public R pictures(Integer productId) {
         QueryWrapper<ProductPicture> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("product_id",productId);
+        queryWrapper.eq("product_id", productId);
         List<ProductPicture> productPictureList = productPictureMapper.selectList(queryWrapper);
         if (productPictureList == null) {
             log.info("ProductServiceImpl.detail业务结束，结果{}", "商品图片查询失败");
             return R.fail("商品图片查询失败");
         }
         log.info("ProductServiceImpl.detail业务结束，结果{}", "商品图片查询成功");
-        return R.ok("商品详情查询成功",productPictureList);
+        return R.ok("商品详情查询成功", productPictureList);
     }
 
     /**
@@ -214,6 +220,7 @@ public class ProductServiceImpl implements ProductService {
     /**
      * 商品搜索
      * 1、调用搜索客户端，得到商品数据
+     *
      * @param productSearchParam
      * @return
      */
@@ -236,6 +243,36 @@ public class ProductServiceImpl implements ProductService {
         queryWrapper.in("product_id", ids);
 
         return productMapper.selectList(queryWrapper);
+
+    }
+
+    /**
+     * 修改库存，增加销量
+     * 为了避免了进行频繁的sql操作，采用批量操作
+     *
+     * @param orderToProducts
+     */
+    @Override
+    @Transactional
+    public void subNumber(List<OrderToProduct> orderToProducts) {
+//        orderToProducts.forEach(orderToProduct -> {
+//            Integer productId = orderToProduct.getProductId();
+//            Product product = productMapper.selectById(productId);
+//            product.setProductNum(product.getProductNum() - orderToProduct.getNum());
+//            product.setProductSales(product.getProductSales() + orderToProduct.getNum());
+//            UpdateWrapper<Product> updateWrapper = new UpdateWrapper<>();
+//            updateWrapper.eq("product_id", productId);
+//            productMapper.update(product, updateWrapper);
+//        });
+        Map<Integer, OrderToProduct> orderToProductMap = orderToProducts.stream().collect(Collectors.toMap(OrderToProduct::getProductId, v -> v));
+        Set<Integer> productIds = orderToProductMap.keySet();
+        List<Product> productList = productMapper.selectBatchIds(productIds);
+        productList.forEach(product -> {
+            product.setProductNum(product.getProductNum() - orderToProductMap.get(product.getProductId()).getNum());
+            product.setProductSales(product.getProductSales() + orderToProductMap.get(product.getProductId()).getNum());
+        });
+
+        updateBatchById(productList);
 
     }
 }

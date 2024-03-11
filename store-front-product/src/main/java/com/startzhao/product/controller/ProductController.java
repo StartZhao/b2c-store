@@ -41,7 +41,7 @@ public class ProductController {
 
     @PostMapping("/category/list")
     public R list() {
-        return productService.list();
+        return productService.listCategory();
     }
 
     @PostMapping("/bycategory")

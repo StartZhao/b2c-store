@@ -17,7 +17,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @Slf4j
 @SpringBootApplication
 @MapperScan(basePackages = "com.startzhao.carousel.mapper")
-public class CarouselApplication {
+public class
+CarouselApplication {
     public static void main(String[] args) {
         SpringApplication.run(CarouselApplication.class, args);
         log.info("carousel started");

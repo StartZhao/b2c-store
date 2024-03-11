@@ -4,6 +4,8 @@ import com.startzhao.param.CartUpdateParam;
 import com.startzhao.param.CollectSaveParam;
 import com.startzhao.utils.R;
 
+import java.util.List;
+
 /**
  * ClassName: CartService
  * Package: com.startzhao.cart.service
@@ -43,4 +45,10 @@ public interface CartService {
      * @return
      */
     R remove(CollectSaveParam collectSaveParam);
+
+    /**
+     * 根据购物车 id 删除购物车信息
+     * @param cartIds
+     */
+    void clearCart(List<Integer> cartIds);
 }
