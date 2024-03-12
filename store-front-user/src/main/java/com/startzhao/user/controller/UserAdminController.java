@@ -43,5 +43,10 @@ public class UserAdminController {
         return userService.update(user);
     }
 
+    @PostMapping("/admin/save")
+    public R save(@RequestBody User user){
+        return userService.save(user);
+    }
+
 
 }

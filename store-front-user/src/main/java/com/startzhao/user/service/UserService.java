@@ -58,4 +58,11 @@ public interface UserService {
      * @return
      */
     R update(User user);
+
+    /**
+     * 添加用户
+     * @param user
+     * @return
+     */
+    R save(User user);
 }

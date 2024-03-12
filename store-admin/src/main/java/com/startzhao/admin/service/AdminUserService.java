@@ -43,4 +43,11 @@ public interface AdminUserService {
      * @return
      */
     R update(User user);
+
+    /**
+     * 保存用户
+     * @param user
+     * @return
+     */
+    R save(User user);
 }

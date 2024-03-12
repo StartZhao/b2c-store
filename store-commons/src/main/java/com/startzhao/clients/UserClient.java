@@ -30,4 +30,8 @@ public interface UserClient {
     @PostMapping("/user/admin/update")
     R update(@RequestBody User user);
 
+
+    @PostMapping("/user/admin/save")
+    R save(@RequestBody User user);
+
 }

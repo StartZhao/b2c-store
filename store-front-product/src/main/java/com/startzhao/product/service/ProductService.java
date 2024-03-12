@@ -87,4 +87,11 @@ public interface ProductService extends IService<Product> {
      * @param orderToProducts
      */
     void subNumber(List<OrderToProduct> orderToProducts);
+
+    /**
+     * 判断类别是否被商品绑定
+     * @param categoryId
+     * @return
+     */
+    boolean exist(Integer categoryId);
 }

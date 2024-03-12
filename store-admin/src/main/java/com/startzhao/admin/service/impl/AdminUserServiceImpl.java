@@ -82,7 +82,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     /**
      * 更新用户数据
-     *
+     * 由于展示用户就是直接拿数据库的密码信息，所以该密码已经被加密处理了
      * @param user
      * @return
      */
@@ -98,5 +98,23 @@ public class AdminUserServiceImpl implements AdminUserService {
     public R update(User user) {
 
         return userClient.update(user);
+    }
+
+    /**
+     * 保存用户
+     *
+     * @param user
+     * @return
+     */
+    @Override
+    @Caching(
+            //删除,清空缓存集合
+            //删除,清空对应单条id的数据
+            evict = {
+                    @CacheEvict(value = "list.user",allEntries = true),
+            }
+    )
+    public R save(User user) {
+        return userClient.save(user);
     }
 }

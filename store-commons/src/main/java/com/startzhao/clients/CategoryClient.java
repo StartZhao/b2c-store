@@ -1,5 +1,6 @@
 package com.startzhao.clients;
 
+import com.startzhao.param.PageParam;
 import com.startzhao.param.ProductHotsParam;
 import com.startzhao.pojo.Category;
 import com.startzhao.utils.R;
@@ -32,4 +33,20 @@ public interface CategoryClient {
 
     @PostMapping("/category/list")
     R list();
+
+    @PostMapping("/category/admin/list")
+    R list(@RequestBody PageParam pageParam);
+
+
+    @PostMapping("/category/admin/save")
+    R save(@RequestBody String categoryName);
+
+    @PostMapping("/category/admin/remove")
+    R remove(@RequestBody Integer categoryId);
+
+    @PostMapping("/category/admin/update")
+    R update(@RequestBody Category category);
+
 }
+
+

@@ -64,5 +64,9 @@ public class AdminUserController {
     }
 
 
+    @PostMapping("/save")
+    public R save(User user) {
+        return adminUserService.save(user);
+    }
 
 }

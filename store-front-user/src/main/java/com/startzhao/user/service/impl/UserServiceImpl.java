@@ -15,6 +15,7 @@ import com.startzhao.utils.R;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Param;
 import org.aspectj.weaver.ast.Var;
+import org.bouncycastle.est.CSRRequestResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
@@ -168,8 +169,16 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public R update(User user) {
-        String password = MD5Util.encode(user.getPassword() + UserConstants.USER_SLAT);
-        user.setPassword(password);
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("user_id",user.getUserId()).eq("password",user.getPassword());
+        Long count = userMapper.selectCount(queryWrapper);
+        // 没查到数据，证明了密码被修改过
+        if (count == 0) {
+            String password = MD5Util.encode(user.getPassword() + UserConstants.USER_SLAT);
+            user.setPassword(password);
+
+        }
+
         int rows = userMapper.updateById(user);
 
 
@@ -179,5 +188,37 @@ public class UserServiceImpl implements UserService {
         }
         log.info("UserServiceImpl.update业务结束，结果{}", "更新用户数据成功");
         return R.ok("更新用户数据成功");
+    }
+
+    /**
+     * 添加用户
+     * 密码需要加密处理
+     * 需要判断用户是否存在
+     * @param user
+     * @return
+     */
+    @Override
+    public R save(User user) {
+
+        //参数封装
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("user_name", user.getUserName());
+
+        //数据查询
+        Long total = userMapper.selectCount(queryWrapper);
+        if (total > 0) {
+            log.info("UserServiceImpl.register业务结束，结果{}", "用户已存在，添加失败！");
+            return R.fail("用户已存在，添加失败！");
+        }
+
+        user.setPassword(MD5Util.encode(user.getPassword() + UserConstants.USER_SLAT));
+        int rows = userMapper.insert(user);
+        if (rows == 0) {
+            log.info("UserServiceImpl.save业务结束，结果{}", "新增用户失败");
+            return R.ok("新增用户失败");
+        }
+
+        log.info("UserServiceImpl.save业务结束，结果{}", "保存成功");
+        return R.ok("保存成功");
     }
 }

@@ -275,4 +275,21 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         updateBatchById(productList);
 
     }
+
+    /**
+     * 判断类别是否被商品绑定
+     * ture 类别被商品绑定
+     * @param categoryId
+     * @return
+     */
+    @Override
+    public boolean exist(Integer categoryId) {
+        QueryWrapper<Product> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("category_id",categoryId);
+        List<Product> productList = productMapper.selectList(queryWrapper);
+        if (productList.isEmpty()) {
+            return false;
+        }
+        return true;
+    }
 }

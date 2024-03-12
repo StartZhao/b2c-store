@@ -1,5 +1,7 @@
 package com.startzhao.category.service;
 
+import com.startzhao.param.PageParam;
+import com.startzhao.pojo.Category;
 import com.startzhao.utils.R;
 
 import java.util.List;
@@ -34,4 +36,32 @@ public interface CategoryService {
      * @return
      */
     R list();
+
+    /**
+     * 分页类别展示
+     * @param pageParam
+     * @return
+     */
+    R list(PageParam pageParam);
+
+    /**
+     * 类别数据添加
+     * @param categoryName
+     * @return
+     */
+    R save(String categoryName);
+
+    /**
+     * 类别数据删除
+     * @param categoryId
+     * @return
+     */
+    R remove(Integer categoryId);
+
+    /**
+     * 类别数据更新
+     * @param category
+     * @return
+     */
+    R update(Category category);
 }
