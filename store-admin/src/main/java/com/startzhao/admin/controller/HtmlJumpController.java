@@ -1,10 +1,12 @@
 package com.startzhao.admin.controller;
 
+
 import com.startzhao.clients.CategoryClient;
 import com.startzhao.pojo.Category;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -126,32 +128,32 @@ public class HtmlJumpController {
     }
 
 
-//    /**
-//     * 商品保存页面跳转
-//     * @return
-//     */
-//    @GetMapping("/product/save/html")
-//    public String productSaveHtml(Model model){
-//        log.info("HtmlJumpController.productSaveHtml业务结束，结果:{}");
-//
-//        //查询类别列表,存入共享域
-//        List<Category> list = categoryClient.list();
-//        model.addAttribute("clist",list);
-//        return "product/add";
-//    }
+    /**
+     * 商品保存页面跳转
+     * @return
+     */
+    @GetMapping("/product/save/html")
+    public String productSaveHtml(Model model){
+        log.info("HtmlJumpController.productSaveHtml业务结束，结果:{}");
 
-//    /**
-//     * 商品保存页面跳转
-//     * @return
-//     */
-//    @GetMapping("/product/update/html")
-//    public String productUpdateHtml(Model model){
-//        log.info("HtmlJumpController.productUpdateHtml业务结束，结果:{}");
-//
-//        //查询类别列表,存入共享域
-//        List<Category> list = categoryClient.list();
-//        model.addAttribute("clist",list);
-//        return "product/edit";
-//    }
+        //查询类别列表,存入共享域
+        List<Category> list = (List<Category>) categoryClient.list().getData();
+        model.addAttribute("clist",list);
+        return "product/add";
+    }
+
+    /**
+     * 商品保存页面跳转
+     * @return
+     */
+    @GetMapping("/product/update/html")
+    public String productUpdateHtml(Model model){
+        log.info("HtmlJumpController.productUpdateHtml业务结束，结果:{}");
+
+        //查询类别列表,存入共享域
+        List<Category> list = ((List<Category>) categoryClient.list().getData());
+        model.addAttribute("clist",list);
+        return "product/edit";
+    }
 }
 

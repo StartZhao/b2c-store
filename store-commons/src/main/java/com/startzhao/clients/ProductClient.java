@@ -1,9 +1,12 @@
 package com.startzhao.clients;
 
+import com.startzhao.param.ProductSearchParam;
 import com.startzhao.pojo.Product;
+import com.startzhao.utils.R;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
@@ -29,4 +32,7 @@ public interface ProductClient {
 
     @PostMapping("/product/category/exist")
     boolean exist(@RequestParam Integer categoryId);
+
+    @PostMapping("/product/admin/list")
+    R list(@RequestBody ProductSearchParam productSearchParam);
 }

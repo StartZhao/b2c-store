@@ -72,8 +72,7 @@
         <div class="layui-input-block">
             <select name="categoryId" lay-filter="aihao">
                 <option value="">--------</option>
-                <option th:each="item : ${clist}" th:value="${item.categoryId}" th:text="${item.categoryName}"></option>
-
+                <option th:each="item : ${clist}" th:value="${item.category_id}" th:text="${item.category_name}"></option>
             </select>
         </div>
     </div>
