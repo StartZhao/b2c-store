@@ -5,10 +5,17 @@ import com.startzhao.admin.commons.param.AdminUserParam;
 import com.startzhao.admin.commons.pojo.AdminUser;
 import com.startzhao.admin.mapper.AdminUserMapper;
 import com.startzhao.admin.service.AdminUserService;
+import com.startzhao.clients.UserClient;
 import com.startzhao.constants.UserConstants;
+import com.startzhao.param.PageParam;
+import com.startzhao.pojo.User;
 import com.startzhao.utils.MD5Util;
+import com.startzhao.utils.R;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 /**
@@ -26,6 +33,8 @@ public class AdminUserServiceImpl implements AdminUserService {
 
     @Autowired
     private AdminUserMapper adminUserMapper;
+    @Autowired
+    private UserClient userClient;
 
     /**
      * 用户登录
@@ -40,5 +49,54 @@ public class AdminUserServiceImpl implements AdminUserService {
         QueryWrapper<AdminUser> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("user_account",account).eq("user_password",password);
         return adminUserMapper.selectOne(queryWrapper);
+    }
+
+    /**
+     * 用户展示
+     * 1、调用用户客户端得到分页查询
+     * @return
+     */
+    @Override
+    @Cacheable(value = "list.user", key = "#pageParam.currentPage+'-'+#pageParam.pageSize")
+    public R list(PageParam pageParam) {
+        return userClient.listPage(pageParam);
+
+    }
+
+    /**
+     * 删除用户
+     *
+     * @param userId
+     * @return
+     */
+    @Override
+    @Caching(
+            evict = {
+                    @CacheEvict(value = "list.user",allEntries = true),
+                    @CacheEvict(value = "user", key = "#userId")
+            }
+    )
+    public R remove(Integer userId) {
+        return userClient.remove(userId);
+    }
+
+    /**
+     * 更新用户数据
+     *
+     * @param user
+     * @return
+     */
+    @Override
+    @Caching(
+            //删除,清空缓存集合
+            //删除,清空对应单条id的数据
+            evict = {
+                    @CacheEvict(value = "list.user",allEntries = true),
+                    @CacheEvict(value = "user",key = "#user.userId" )
+            }
+    )
+    public R update(User user) {
+
+        return userClient.update(user);
     }
 }

@@ -1,5 +1,6 @@
 package com.startzhao.user.controller;
 
+import com.startzhao.param.PageParam;
 import com.startzhao.param.UserCheckParam;
 import com.startzhao.param.UserLoginParam;
 import com.startzhao.pojo.User;

@@ -3,14 +3,13 @@ package com.startzhao.admin.controller;
 import com.startzhao.admin.commons.param.AdminUserParam;
 import com.startzhao.admin.commons.pojo.AdminUser;
 import com.startzhao.admin.service.AdminUserService;
+import com.startzhao.param.PageParam;
+import com.startzhao.pojo.User;
 import com.startzhao.utils.R;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 
@@ -46,6 +45,22 @@ public class AdminUserController {
     public R logout(HttpSession session) {
         session.invalidate();
         return R.ok("退出登录成功");
+    }
+
+
+    @GetMapping("/list")
+    public R list(PageParam pageParam) {
+        return adminUserService.list(pageParam);
+    }
+
+    @PostMapping("/remove")
+    public R remove(Integer userId) {
+        return adminUserService.remove(userId);
+    }
+
+    @PostMapping("/update")
+    public R update(User user) {
+        return adminUserService.update(user);
     }
 
 

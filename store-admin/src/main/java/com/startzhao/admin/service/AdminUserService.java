@@ -2,6 +2,9 @@ package com.startzhao.admin.service;
 
 import com.startzhao.admin.commons.param.AdminUserParam;
 import com.startzhao.admin.commons.pojo.AdminUser;
+import com.startzhao.param.PageParam;
+import com.startzhao.pojo.User;
+import com.startzhao.utils.R;
 
 /**
  * ClassName: AdminUserService
@@ -20,4 +23,24 @@ public interface AdminUserService {
      * @return
      */
     AdminUser login(AdminUserParam adminUserParam);
+
+    /**
+     * 用户展示
+     * @return
+     */
+    R list(PageParam pageParam);
+
+    /**
+     * 删除用户
+     * @param userId
+     * @return
+     */
+    R remove(Integer userId);
+
+    /**
+     * 更新用户数据
+     * @param user
+     * @return
+     */
+    R update(User user);
 }

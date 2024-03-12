@@ -1,5 +1,6 @@
 package com.startzhao.user.service;
 
+import com.startzhao.param.PageParam;
 import com.startzhao.param.UserCheckParam;
 import com.startzhao.param.UserLoginParam;
 import com.startzhao.pojo.User;
@@ -36,4 +37,25 @@ public interface UserService {
      * @return 结果 001 data 或 004
      */
     R login(UserLoginParam userLoginParam);
+
+    /**
+     * 用户分页显示
+     * @param pageParam
+     * @return
+     */
+    R listPage(PageParam pageParam);
+
+    /**
+     * 用户数据删除
+     * @param userId
+     * @return
+     */
+    R remove(Integer userId);
+
+    /**
+     * 更新用户数据
+     * @param user
+     * @return
+     */
+    R update(User user);
 }

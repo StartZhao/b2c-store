@@ -1,7 +1,10 @@
 package com.startzhao.user.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.startzhao.constants.UserConstants;
+import com.startzhao.param.PageParam;
 import com.startzhao.param.UserCheckParam;
 import com.startzhao.param.UserLoginParam;
 import com.startzhao.pojo.User;
@@ -13,7 +16,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Param;
 import org.aspectj.weaver.ast.Var;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * ClassName: UserServiceImpl
@@ -116,5 +123,61 @@ public class UserServiceImpl implements UserService {
         log.info("UserServiceImpl.login业务结束，结果{}", "登录成功");
         user.setPassword(null);
         return R.ok("登录成功",user);
+    }
+
+    /**
+     * 用户分页显示
+     *
+     * @param pageParam
+     * @return
+     */
+    @Override
+    public R listPage(PageParam pageParam) {
+        IPage<User> page = new Page<>(pageParam.getCurrentPage(),pageParam.getPageSize());
+        page = userMapper.selectPage(page,null);
+        long total = page.getTotal();
+        List<User> userList = page.getRecords();
+        R ok = R.ok("用户查询成功", userList, total);
+        log.info("UserServiceImpl.listPage业务结束，结果{}", ok);
+
+        return ok;
+    }
+
+    /**
+     * 用户数据删除
+     *
+     * @param userId
+     * @return
+     */
+    @Override
+    public R remove(Integer userId) {
+        int rows = userMapper.deleteById(userId);
+        if (rows == 0) {
+            log.info("UserServiceImpl.remove业务结束，结果{}", "删除用户失败，请稍后再试");
+            return R.fail("删除用户失败");
+        }
+        log.info("UserServiceImpl.remove业务结束，结果{}", "用户数据删除成功");
+        return R.ok("用户数据删除成功");
+    }
+
+    /**
+     * 更新用户数据
+     *
+     * @param user
+     * @return
+     */
+    @Override
+    public R update(User user) {
+        String password = MD5Util.encode(user.getPassword() + UserConstants.USER_SLAT);
+        user.setPassword(password);
+        int rows = userMapper.updateById(user);
+
+
+        if (rows == 0) {
+            log.info("UserServiceImpl.update业务结束，结果{}", "更新用户数据失败");
+            return R.fail("更新用户数据失败");
+        }
+        log.info("UserServiceImpl.update业务结束，结果{}", "更新用户数据成功");
+        return R.ok("更新用户数据成功");
     }
 }
