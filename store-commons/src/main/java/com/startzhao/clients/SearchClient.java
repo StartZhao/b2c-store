@@ -1,10 +1,13 @@
 package com.startzhao.clients;
 
 import com.startzhao.param.ProductSearchParam;
+import com.startzhao.pojo.Product;
 import com.startzhao.utils.R;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+
+import java.io.IOException;
 
 /**
  * ClassName: SearchClient
@@ -20,4 +23,11 @@ public interface SearchClient {
 
     @PostMapping("/search/product")
     R product(@RequestBody ProductSearchParam productSearchParam);
+
+
+    @PostMapping("/search/save")
+    void save(@RequestBody Product product) throws IOException;
+
+    @PostMapping("/search/remove")
+    void remove(@RequestBody Integer productId) throws IOException;
 }

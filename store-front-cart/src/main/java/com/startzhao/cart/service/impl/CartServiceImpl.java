@@ -209,4 +209,21 @@ public class CartServiceImpl implements CartService {
     public void clearCart(List<Integer> cartIds) {
         cartMapper.deleteBatchIds(cartIds);
     }
+
+    /**
+     * 购物车是否引用商品
+     *
+     * @param productId
+     * @return
+     */
+    @Override
+    public Boolean reference(Integer productId) {
+        QueryWrapper<Cart> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("product_id",productId);
+        Long count = cartMapper.selectCount(queryWrapper);
+        if (count == 0) {
+            return false;
+        }
+        return true;
+    }
 }

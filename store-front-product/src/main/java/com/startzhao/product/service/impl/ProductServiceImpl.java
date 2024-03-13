@@ -5,10 +5,10 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.startzhao.clients.CategoryClient;
-import com.startzhao.clients.SearchClient;
+import com.startzhao.clients.*;
 import com.startzhao.param.ProductByCategoryParam;
 import com.startzhao.param.ProductHotsParam;
+import com.startzhao.param.ProductSaveParam;
 import com.startzhao.param.ProductSearchParam;
 import com.startzhao.pojo.Product;
 import com.startzhao.pojo.ProductPicture;
@@ -18,11 +18,16 @@ import com.startzhao.product.service.ProductService;
 import com.startzhao.to.OrderToProduct;
 import com.startzhao.utils.R;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +52,12 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
 
     @Autowired
     private SearchClient searchClient;
+    @Autowired
+    private OrderClient orderClient;
+    @Autowired
+    private CartClient cartClient;
+    @Autowired
+    private CollectClient collectClient;
 
     @Autowired
     private ProductMapper productMapper;
@@ -138,7 +149,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     }
 
     /**
-     * 根据条件获取shangpin数据
+     * 根据条件获取商品数据
      * 1、根据 条件查询商品
      * 2、返回查询结果
      *
@@ -291,5 +302,109 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
             return false;
         }
         return true;
+    }
+
+    /**
+     * 保存商品和图片数据
+     * 1、拿到商品数据，插入到商品表
+     * 2、拿到图片地址，插入到图片表，由于未实现，图片业务层，故没采用批量插入
+     * 3、更新缓存
+     * 4、更新搜索数据库
+     * @param productSaveParam
+     * @return
+     */
+    @Override
+    @CacheEvict(value = "list.product", allEntries = true)
+    @Transactional
+    public R saveDetail(ProductSaveParam productSaveParam) throws IOException {
+        Product product = new Product();
+        BeanUtils.copyProperties(productSaveParam,product);
+        int rows = productMapper.insert(product);
+        if (rows == 0) {
+            log.info("ProductServiceImpl.saveDetail业务结束，结果{}", "保存商品失败");
+            return R.fail("保存商品失败");
+        }
+        String[] urls = productSaveParam.getPictures().split("\\+");
+        for (String url : urls) {
+            ProductPicture productPicture = new ProductPicture();
+            productPicture.setProductId(product.getProductId());
+            productPicture.setProductPicture(url);
+            rows = productPictureMapper.insert(productPicture);
+            if (rows == 0) {
+                log.info("ProductServiceImpl.saveDetail业务结束，结果{}", "保存图片失败");
+                return R.fail("保存图片失败");
+            }
+        }
+
+        searchClient.save(product);
+
+        log.info("ProductServiceImpl.saveDetail业务结束，结果{}", "保存商品成功");
+        return R.ok("保存商品成功");
+    }
+
+    /**
+     * 删除商品以及对应的图片数据
+     * 由于其他表对商品存在依赖，要先确定是否依赖着
+     * 检查购物车和订单和收藏是否引用该商品
+     * 1、删除对应商品
+     * 2、删除对应图片
+     * 3、更新缓存
+     * 4、更新搜索
+     * @param productId
+     * @return
+     */
+    @Override
+    @CacheEvict(value = "list.product", allEntries = true)
+    @Transactional
+    public R removeDetail(Integer productId) throws IOException {
+        Boolean a = orderClient.reference(productId);
+        Boolean b = collectClient.reference(productId);
+        Boolean c = cartClient.reference(productId);
+        if (orderClient.reference(productId) || collectClient.reference(productId) || cartClient.reference(productId)) {
+            log.info("ProductServiceImpl.removeDetail业务结束，结果{}", "删除失败，存在引用");
+            return R.fail("删除失败，存在引用");
+        }
+        QueryWrapper<Product> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("product_id",productId);
+        int rows = productMapper.delete(queryWrapper);
+        if (rows == 0) {
+            log.info("ProductServiceImpl.removeDetail业务结束，结果{}", "删除商品失败");
+            return R.fail("删除商品失败");
+        }
+
+        QueryWrapper<ProductPicture> productPictureQueryWrapper = new QueryWrapper<>();
+        productPictureQueryWrapper.eq("product_id",productId);
+        rows = productPictureMapper.delete(productPictureQueryWrapper);
+        if (rows == 0) {
+            log.info("ProductServiceImpl.removeDetail业务结束，结果{}", "删除图片失败");
+            return R.fail("删除图片失败");
+        }
+        searchClient.remove(productId);
+        log.info("ProductServiceImpl.removeDetail业务结束，结果{}", "删除商品成功");
+        return R.ok("删除商品成功");
+    }
+
+    /**
+     * 更新商品数据
+     * 1、更新商品数据
+     * 2、更新缓存
+     * 3、更新搜索
+     * @param product
+     * @return
+     */
+    @Override
+    @CacheEvict(value = "list.product", allEntries = true)
+    public R update(Product product) throws IOException {
+        UpdateWrapper<Product> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("product_id",product.getProductId());
+        int rows = productMapper.update(product, updateWrapper);
+        if (rows == 0) {
+            log.info("ProductServiceImpl.update业务结束，结果{}", "更新商品信息失败");
+            return R.fail("更新商品信息失败");
+        }
+        searchClient.save(product);
+
+        log.info("ProductServiceImpl.update业务结束，结果{}", "更新商品信息成功");
+        return R.ok("更新商品信息成功");
     }
 }

@@ -3,15 +3,19 @@ package com.startzhao.search.controller.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.startzhao.clients.ProductClient;
+import com.startzhao.doc.ProductDoc;
 import com.startzhao.param.ProductSearchParam;
 import com.startzhao.pojo.Product;
 import com.startzhao.search.controller.service.SearchService;
 import com.startzhao.utils.R;
 import lombok.extern.slf4j.Slf4j;
+import org.elasticsearch.action.delete.DeleteRequest;
+import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHits;
@@ -88,5 +92,33 @@ public class SearchServiceImpl implements SearchService {
         R ok = R.ok("搜索成功", productList, total);
         log.info("SearchServiceImpl.product业务结束，结果{}", ok);
         return ok;
+    }
+
+
+    /**
+     * 保存商品时更新商品es数据库
+     *
+     * @param product
+     * @return
+     */
+    @Override
+    public void save(Product product) throws IOException {
+        IndexRequest indexRequest = new IndexRequest("product").id(product.getProductId().toString());
+        ProductDoc productDoc = new ProductDoc(product);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(productDoc);
+        indexRequest.source(json, XContentType.JSON);
+        restHighLevelClient.index(indexRequest, RequestOptions.DEFAULT);
+    }
+
+    /**
+     * 删除商品时更新商品es数据库
+     *
+     * @param productId
+     */
+    @Override
+    public void remove(Integer productId) throws IOException {
+        DeleteRequest deleteRequest = new DeleteRequest("product").id(productId.toString());
+        restHighLevelClient.delete(deleteRequest, RequestOptions.DEFAULT);
     }
 }

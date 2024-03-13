@@ -3,11 +3,13 @@ package com.startzhao.product.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.startzhao.param.ProductByCategoryParam;
 import com.startzhao.param.ProductHotsParam;
+import com.startzhao.param.ProductSaveParam;
 import com.startzhao.param.ProductSearchParam;
 import com.startzhao.pojo.Product;
 import com.startzhao.to.OrderToProduct;
 import com.startzhao.utils.R;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -94,4 +96,25 @@ public interface ProductService extends IService<Product> {
      * @return
      */
     boolean exist(Integer categoryId);
+
+    /**
+     * 保存商品和图片数据
+     * @param productSaveParam
+     * @return
+     */
+    R saveDetail(ProductSaveParam productSaveParam) throws IOException;
+
+    /**
+     * 删除商品以及对应的图片数据
+     * @param productId
+     * @return
+     */
+    R removeDetail(Integer productId) throws IOException;
+
+    /**
+     * 更新商品数据
+     * @param product
+     * @return
+     */
+    R update(Product product) throws IOException;
 }

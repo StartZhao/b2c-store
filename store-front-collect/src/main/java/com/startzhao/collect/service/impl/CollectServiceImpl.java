@@ -5,6 +5,7 @@ import com.startzhao.clients.ProductClient;
 import com.startzhao.collect.mapper.CollectMapper;
 import com.startzhao.collect.service.CollectService;
 import com.startzhao.param.CollectSaveParam;
+import com.startzhao.pojo.Cart;
 import com.startzhao.pojo.Collect;
 import com.startzhao.pojo.Product;
 import com.startzhao.utils.R;
@@ -139,4 +140,22 @@ public class CollectServiceImpl implements CollectService {
         log.info("CollectServiceImpl.remove业务结束，结果{}", "删除收藏成功");
         return R.ok("删除收藏成功");
     }
+
+    /**
+     * 是否引用商品
+     *
+     * @param productId
+     * @return
+     */
+    @Override
+    public Boolean reference(Integer productId) {
+        QueryWrapper<Collect> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("product_id",productId);
+        Long count = collectMapper.selectCount(queryWrapper);
+        if (count == 0) {
+            return false;
+        }
+        return true;
+    }
+
 }

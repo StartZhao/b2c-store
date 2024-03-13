@@ -28,4 +28,11 @@ public interface OrderService extends IService<Orders> {
      * @param userId
      */
     R list(Integer userId);
+
+    /**
+     * 订单是否引用商品
+     * @param productId
+     * @return
+     */
+    Boolean reference(Integer productId);
 }

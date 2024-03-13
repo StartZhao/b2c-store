@@ -34,4 +34,11 @@ public interface CollectService {
      * @return
      */
     R remove(CollectSaveParam collectSaveParam);
+
+    /**
+     * 是否引用商品
+     * @param productId
+     * @return
+     */
+    Boolean reference(Integer productId);
 }

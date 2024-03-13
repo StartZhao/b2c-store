@@ -3,8 +3,7 @@ package com.startzhao.product;
 import com.baomidou.mybatisplus.annotation.DbType;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
-import com.startzhao.clients.CategoryClient;
-import com.startzhao.clients.SearchClient;
+import com.startzhao.clients.*;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
@@ -25,7 +24,7 @@ import org.springframework.context.annotation.Bean;
 @Slf4j
 @SpringBootApplication
 @MapperScan(basePackages = "com.startzhao.product.mapper")
-@EnableFeignClients(clients = {CategoryClient.class, SearchClient.class})
+@EnableFeignClients(clients = {CategoryClient.class, SearchClient.class, OrderClient.class, CollectClient.class, CartClient.class})
 @EnableCaching
 public class ProductApplication {
 

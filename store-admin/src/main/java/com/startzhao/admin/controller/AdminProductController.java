@@ -2,7 +2,9 @@ package com.startzhao.admin.controller;
 
 import com.startzhao.admin.commons.utils.AliyunOSSUtils;
 import com.startzhao.admin.service.AdminProductService;
+import com.startzhao.param.ProductSaveParam;
 import com.startzhao.param.ProductSearchParam;
+import com.startzhao.pojo.Product;
 import com.startzhao.utils.R;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,5 +52,20 @@ public class AdminProductController {
         System.out.println(url);
         log.info("AdminProductController.upload业务结束，结果{}", "图片上传成功!");
         return R.ok("图片上传成功！", url);
+    }
+
+    @PostMapping("/save")
+    public R save(ProductSaveParam productSaveParam) throws Exception {
+        return adminProductService.save(productSaveParam);
+    }
+
+    @PostMapping("/remove")
+    public R remove(Integer productId) throws Exception {
+        return adminProductService.remove(productId);
+    }
+
+    @PostMapping("/update")
+    public R update(Product product) throws Exception {
+        return adminProductService.update(product);
     }
 }

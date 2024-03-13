@@ -7,6 +7,7 @@ import com.startzhao.clients.ProductClient;
 import com.startzhao.order.mapper.OrderMapper;
 import com.startzhao.order.service.OrderService;
 import com.startzhao.param.OrderParam;
+import com.startzhao.pojo.Cart;
 import com.startzhao.pojo.Orders;
 import com.startzhao.pojo.Product;
 import com.startzhao.to.OrderToProduct;
@@ -17,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -139,4 +141,22 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
 
         return R.ok("订单展示成功", result);
     }
+
+    /**
+     * 订单是否引用商品
+     *
+     * @param productId
+     * @return
+     */
+    @Override
+    public Boolean reference(Integer productId) {
+        QueryWrapper<Orders> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("product_id",productId);
+        Long count = orderMapper.selectCount(queryWrapper);
+        if (count == 0) {
+            return false;
+        }
+        return true;
+    }
+
 }

@@ -1,7 +1,11 @@
 package com.startzhao.search.controller.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.startzhao.param.ProductSearchParam;
+import com.startzhao.pojo.Product;
 import com.startzhao.utils.R;
+
+import java.io.IOException;
 
 /**
  * ClassName: SearchService
@@ -20,4 +24,17 @@ public interface SearchService {
      * @return
      */
     R product(ProductSearchParam productSearchParam);
+
+    /**
+     * 保存商品时更新商品es数据库
+     * @param product
+     * @return
+     */
+    void save(Product product) throws IOException;
+
+    /**
+     * 删除商品时更新商品es数据库
+     * @param productId
+     */
+    void remove(Integer productId) throws IOException;
 }

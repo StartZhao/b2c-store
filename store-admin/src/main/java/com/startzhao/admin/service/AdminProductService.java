@@ -1,7 +1,11 @@
 package com.startzhao.admin.service;
 
+import com.startzhao.param.ProductSaveParam;
 import com.startzhao.param.ProductSearchParam;
+import com.startzhao.pojo.Product;
 import com.startzhao.utils.R;
+
+import java.io.IOException;
 
 /**
  * ClassName: AdminProductService
@@ -21,4 +25,24 @@ public interface AdminProductService {
      */
     R list(ProductSearchParam productSearchParam);
 
+    /**
+     * 保存商品
+     * @param productSaveParam
+     * @return
+     */
+    R save(ProductSaveParam productSaveParam) throws IOException;
+
+    /**
+     * 删除商品
+     * @param productId
+     * @return
+     */
+    R remove(Integer productId) throws IOException;
+
+    /**
+     * 更新商品
+     * @param product
+     * @return
+     */
+    R update(Product product) throws IOException;
 }

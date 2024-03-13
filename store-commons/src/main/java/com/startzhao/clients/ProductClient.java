@@ -1,5 +1,6 @@
 package com.startzhao.clients;
 
+import com.startzhao.param.ProductSaveParam;
 import com.startzhao.param.ProductSearchParam;
 import com.startzhao.pojo.Product;
 import com.startzhao.utils.R;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -35,4 +37,14 @@ public interface ProductClient {
 
     @PostMapping("/product/admin/list")
     R list(@RequestBody ProductSearchParam productSearchParam);
+
+
+    @PostMapping("/product/admin/save")
+    R save(@RequestBody ProductSaveParam productSaveParam) throws IOException;
+
+    @PostMapping("/product/admin/remove")
+    R remove(@RequestBody Integer productId) throws IOException;
+
+    @PostMapping("/product/admin/update")
+    R update(@RequestBody Product product) throws IOException;
 }

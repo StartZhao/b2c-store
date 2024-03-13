@@ -60,9 +60,9 @@
             <select name="categoryId" >
                 <option value="">-------</option>
                 <option th:each="item : ${clist}"
-                        th:value="${item.categoryId}"
-                        th:text="${item.categoryName}"
-                        th:selected="${#strings.equals(item.categoryId,param.categoryId)}"
+                        th:value="${item.category_id}"
+                        th:text="${item.category_name}"
+                        th:selected="${#strings.equals(item.category_id,param.category_id)}"
                 ></option>
             </select>
         </div>

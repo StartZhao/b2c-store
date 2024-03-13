@@ -51,4 +51,11 @@ public interface CartService {
      * @param cartIds
      */
     void clearCart(List<Integer> cartIds);
+
+    /**
+     * 购物车是否引用商品
+     * @param productId
+     * @return
+     */
+    Boolean reference(Integer productId);
 }
