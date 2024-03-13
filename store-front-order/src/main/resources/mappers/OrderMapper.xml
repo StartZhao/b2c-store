@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.startzhao.order.mapper.OrderMapper">
+
+    <select id="adminList" resultType="com.startzhao.vo.AdminOrderVO">
+        SELECT order_id,
+               order_time,
+               user_id,
+               COUNT(product_id)  AS product_num,
+               SUM(product_num)   AS order_num,
+               SUM(product_price) AS order_price
+        FROM orders
+        GROUP BY order_id, order_time, user_id
+        LIMIT #{from},#{size}
+    </select>
+    <select id="adminTotal" resultType="java.lang.Long">
+        SELECT  COUNT(DISTINCT order_id) FROM orders
+    </select>
+</mapper>

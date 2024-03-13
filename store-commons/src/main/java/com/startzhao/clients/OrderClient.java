@@ -1,5 +1,7 @@
 package com.startzhao.clients;
 
+import com.startzhao.param.PageParam;
+import com.startzhao.utils.R;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,4 +21,8 @@ public interface OrderClient {
 
     @PostMapping("/order/product/reference")
     Boolean reference(@RequestBody Integer productId);
+
+
+    @PostMapping("/order/admin/list")
+    R adminList(@RequestBody PageParam pageParam);
 }

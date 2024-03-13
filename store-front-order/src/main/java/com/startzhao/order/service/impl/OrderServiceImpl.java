@@ -2,16 +2,20 @@ package com.startzhao.order.service.impl;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.startzhao.clients.ProductClient;
 import com.startzhao.order.mapper.OrderMapper;
 import com.startzhao.order.service.OrderService;
 import com.startzhao.param.OrderParam;
+import com.startzhao.param.PageParam;
 import com.startzhao.pojo.Cart;
 import com.startzhao.pojo.Orders;
 import com.startzhao.pojo.Product;
 import com.startzhao.to.OrderToProduct;
 import com.startzhao.utils.R;
+import com.startzhao.vo.AdminOrderVO;
 import com.startzhao.vo.CartVO;
 import com.startzhao.vo.OrderVO;
 import lombok.extern.slf4j.Slf4j;
@@ -159,4 +163,17 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Orders> implement
         return true;
     }
 
+    /**
+     * 后台订单展示功能
+     * 需要将将订单号一致的订单合并成一个订单
+     * 之前的订单都是按商品继续细分了
+     * @param pageParam
+     * @return
+     */
+    @Override
+    public R adminList(PageParam pageParam) {
+        List<AdminOrderVO> adminOrderVOList = orderMapper.adminList(pageParam.getFrom(),pageParam.getSize());
+        return R.ok("订单显示成功", adminOrderVOList, orderMapper.adminTotal());
+
+    }
 }

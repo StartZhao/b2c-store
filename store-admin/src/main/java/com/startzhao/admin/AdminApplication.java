@@ -1,6 +1,7 @@
 package com.startzhao.admin;
 
 import com.startzhao.clients.CategoryClient;
+import com.startzhao.clients.OrderClient;
 import com.startzhao.clients.ProductClient;
 import com.startzhao.clients.UserClient;
 import org.mybatis.spring.annotation.MapperScan;
@@ -21,7 +22,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @MapperScan("com.startzhao.admin.mapper")
 @SpringBootApplication
 @EnableCaching //开启缓存支持
-@EnableFeignClients(clients = {CategoryClient.class, UserClient.class, ProductClient.class})
+@EnableFeignClients(clients = {CategoryClient.class, UserClient.class, ProductClient.class, OrderClient.class})
 public class AdminApplication  {
 
     public static void main(String[] args) {

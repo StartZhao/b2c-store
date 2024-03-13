@@ -2,6 +2,7 @@ package com.startzhao.order.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.startzhao.param.OrderParam;
+import com.startzhao.param.PageParam;
 import com.startzhao.pojo.Orders;
 import com.startzhao.utils.R;
 
@@ -35,4 +36,12 @@ public interface OrderService extends IService<Orders> {
      * @return
      */
     Boolean reference(Integer productId);
+
+
+    /**
+     * 后台订单展示功能
+     * @param pageParam
+     * @return
+     */
+    R adminList(PageParam pageParam);
 }
